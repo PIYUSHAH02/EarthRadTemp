@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planet Radius and Core Temperature Calculator IE_3</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .input-section {
+      flex: 1;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-right: 20px;
+    }
+
+    .input-section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .input-section label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .input-section input {
+      width: 100%;
+      max-width: 300px;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .input-section button {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .input-section button:hover {
+      background-color: #45a049;
+    }
+
+    #radiusOutput, #coreTemperatureOutput {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .planet-list {
+      list-style-type: none;
+      padding: 0;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-right: 20px;
+    }
+
+    .planet-item {
+      padding: 10px;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background-color: #f4f4f4;
+    }
+
+    .planet-item:hover {
+      background-color: #e0e0e0;
+    }
+
+    .planet-card-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .planet-card-container p {
+      margin: 5px 0;
+    }
+
+    footer {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 16px;
+      font-style: italic;
+      color: #888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Planet Radius and Core Temperature Calculator IE-3</h1>
+  </header>
+
+  <div class="container">
+    <div class="planet-list">
+      <div class="planet-item" onclick="openPlanetCard('earth')">Earth</div>
+    </div>
+
+    <div class="input-sections">
+      <!-- Section to calculate the radius of the planet -->
+      <div class="input-section">
+        <h2>Calculate Planet Radius</h2>
+        <label for="heatRadiationRate">Heat Radiation Rate (W):</label>
+        <input type="number" id="heatRadiationRate" step="0.01" required placeholder="e.g., 2">
+        <label for="heatRadiationRateExponent">Heat Radiation Rate Exponent:</label>
+        <input type="number" id="heatRadiationRateExponent" step="1" required placeholder="e.g., 17">
+        <label for="surfaceTemperature">Surface Temperature (K):</label>
+        <input type="number" id="surfaceTemperature" step="0.01" required>
+        <label for="solarConstant">Solar Constant (W/m²):</label>
+        <input type="number" id="solarConstant" step="0.01" required>
+        <label for="albedo">Albedo (0-1):</label>
+        <input type="number" id="albedo" step="0.01" required>
+        <button onclick="calculatePlanetRadius()">Calculate Radius</button>
+        <div id="radiusOutput"></div>
+      </div>
+
+      <!-- Section to calculate the core temperature -->
+      <div class="input-section">
+        <h2>Calculate Core Temperature</h2>
+        <label for="formationTime">Formation Time (billion years):</label>
+        <input type="number" id="formationTime" step="0.01" required>
+        <label for="planetRadius">Planet Radius (km):</label>
+        <input type="number" id="planetRadius" step="0.01" required>
+        <label for="coreDensity">Core Density (kg/m³):</label>
+        <input type="number" id="coreDensity" step="0.01" required>
+        <label for="mantleDensity">Mantle Density (kg/m³):</label>
+        <input type="number" id="mantleDensity" step="0.01" required>
+        <button onclick="calculateCoreTemperature()">Calculate Core Temperature</button>
+        <div id="coreTemperatureOutput"></div>
+      </div>
+
+      <!-- Add note about complexity -->
+      <div class="note">
+        <p><strong>Note:</strong> Due to the complexity of the model, the calculations may not work accurately for all planets.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Planet Details Modal (hidden initially) -->
+  <div id="earthCard" class="planet-card-container" style="display: none;">
+    <h3>Earth</h3>
+    <p><strong>Heat Radiation Rate:</strong> 2 × 10¹⁷ W</p>
+    <p><strong>Surface Temperature:</strong> 288 K</p>
+    <p><strong>Solar Constant:</strong> 1361 W/m²</p>
+    <p><strong>Albedo:</strong> 0.3</p>
+    <p><strong>Formation Time:</strong> 4.5 billion years</p>
+    <p><strong>Core Density:</strong> 5500 kg/m³</p>
+    <p><strong>Mantle Density:</strong> 3300 kg/m³</p>
+  </div>
+ 
+  <script>
+    // Function to open the card for the selected planet
+    function openPlanetCard(planet) {
+      // Hide all planet cards
+      const cards = document.querySelectorAll('.planet-card-container');
+      cards.forEach(card => card.style.display = 'none');
+
+      // Show the clicked planet card
+      const card = document.getElementById(`${planet}Card`);
+      card.style.display = 'block';
+
+      // Set the values for the fields based on the selected planet
+      setValues(planet);
+    }
+
+    // Function to set values for selected planet
+    function setValues(planet) {
+      const planetsData = {
+        earth: {
+          heatRadiationRate: 2,
+          heatRadiationRateExponent: 17,
+          surfaceTemperature: 288,
+          solarConstant: 1361,
+          albedo: 0.3,
+          formationTime: 4.5,
+          coreDensity: 5500,
+          mantleDensity: 3300,
+        },
+      };
+
+      const planetData = planetsData[planet];
+
+      // Set the values for the fields
+      document.getElementById('heatRadiationRate').value = planetData.heatRadiationRate;
+      document.getElementById('heatRadiationRateExponent').value = planetData.heatRadiationRateExponent;
+      document.getElementById('surfaceTemperature').value = planetData.surfaceTemperature;
+      document.getElementById('solarConstant').value = planetData.solarConstant;
+      document.getElementById('albedo').value = planetData.albedo;
+      document.getElementById('formationTime').value = planetData.formationTime;
+      document.getElementById('planetRadius').value = 6371; // Example radius in km
+      document.getElementById('coreDensity').value = planetData.coreDensity;
+      document.getElementById('mantleDensity').value = planetData.mantleDensity;
+    }
+
+    // Function to calculate the planet radius (dummy calculation for now)
+    function calculatePlanetRadius() {
+      const heatRadiationRate = parseFloat(document.getElementById('heatRadiationRate').value);
+      const heatRadiationRateExponent = parseFloat(document.getElementById('heatRadiationRateExponent').value);
+      const surfaceTemperature = parseFloat(document.getElementById('surfaceTemperature').value);
+      const solarConstant = parseFloat(document.getElementById('solarConstant').value);
+      const albedo = parseFloat(document.getElementById('albedo').value);
+
+      // Adjusted heat radiation rate
+      const adjustedHeatRadiationRate = heatRadiationRate * Math.pow(10, heatRadiationRateExponent);
+
+      // Radius calculation
+      const radius = Math.sqrt((adjustedHeatRadiationRate * solarConstant) / (4 * Math.PI * Math.pow(surfaceTemperature, 4) * (1 - albedo)));
+
+      // Output the result
+      document.getElementById('radiusOutput').innerHTML = `Estimated Planet Radius: ${radius.toFixed(2)} meters`;
+    }
+
+    // Function to calculate the core temperature (dummy calculation for now)
+    function calculateCoreTemperature() {
+      const formationTime = parseFloat(document.getElementById('formationTime').value);
+      const planetRadius = parseFloat(document.getElementById('planetRadius').value);
+      const coreDensity = parseFloat(document.getElementById('coreDensity').value);
+      const mantleDensity = parseFloat(document.getElementById('mantleDensity').value);
+
+      // Core temperature calculation (example simplification)
+      const coreTemperature = 6000 - (formationTime * 1e9) / 1e20;
+
+      // Output the result
+      document.getElementById('coreTemperatureOutput').innerHTML = `Estimated Core Temperature: ${coreTemperature.toFixed(2)} K`;
+    }
+  </script>
+
+  <footer>
+    <p>&copy; 2024 Planet Radius and Core Temperature Calculator IE-3 Pushkar shah</p>
+  </footer>
+</body>
+</html>
